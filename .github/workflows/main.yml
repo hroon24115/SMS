@@ -15,17 +15,21 @@ jobs:
           
       - name: Initialize Complete Android Structure
         run: |
+          # Create fresh target folders
           mkdir -p app/src/main/res/values
           mkdir -p app/src/main/java/com/smsfix/app
           
-          # Move your Java files into the structure
-          [ -f SMSInterceptor.java ] && mv SMSInterceptor.java app/src/main/java/com/smsfix/app/ || echo "Interceptor ready"
-          [ -f MainActivity.java ] && mv MainActivity.java app/src/main/java/com/smsfix/app/ || echo "MainActivity ready"
+          # Move your Java files safely into the correct folders
+          [ -f SMSInterceptor.java ] && mv SMSInterceptor.java app/src/main/java/com/smsfix/app/ || echo "Interceptor positioned"
+          [ -f MainActivity.java ] && mv MainActivity.java app/src/main/java/com/smsfix/app/ || echo "MainActivity positioned"
           
-          # Write a fully valid, self-contained Manifest directly to bypass merging issues
+          # CRUCIAL: Remove the old duplicate manifest from the base folder to prevent merging crashes
+          rm -f AndroidManifest.xml
+          
+          # Write the perfect, standard manifest directly to the correct destination
           cat << 'EOF' > app/src/main/AndroidManifest.xml
           <?xml version="1.0" encoding="utf-8"?>
-          <manifest xmlns:android="http://android.com">
+          <manifest xmlns:android="http://android.com" package="com.smsfix.app">
               <uses-permission android:name="android.permission.SEND_SMS" />
               <uses-permission android:name="android.permission.RECEIVE_SMS" />
               <uses-permission android:name="android.permission.READ_SMS" />
@@ -85,10 +89,10 @@ jobs:
           }
           EOF
           
-          # Generate strings file
+          # Generate a tiny strings file
           echo '<resources><string name="app_name">SMSFix</string></resources>' > app/src/main/res/values/strings.xml
           
-          # Force generate wrapper
+          # Force generate the wrapper execution tools
           gradle wrapper
           
       - name: Setup Gradle
