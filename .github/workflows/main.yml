@@ -23,13 +23,13 @@ jobs:
           [ -f SMSInterceptor.java ] && mv SMSInterceptor.java app/src/main/java/com/smsfix/app/ || echo "Interceptor positioned"
           [ -f MainActivity.java ] && mv MainActivity.java app/src/main/java/com/smsfix/app/ || echo "MainActivity positioned"
           
-          # CRUCIAL: Remove the old duplicate manifest from the base folder to prevent merging crashes
+          # Remove the old duplicate manifest from the base folder to prevent conflicts
           rm -f AndroidManifest.xml
           
-          # Write the perfect, standard manifest directly to the correct destination
+          # Write a clean manifest WITHOUT the deprecated package attribute
           cat << 'EOF' > app/src/main/AndroidManifest.xml
           <?xml version="1.0" encoding="utf-8"?>
-          <manifest xmlns:android="http://android.com" package="com.smsfix.app">
+          <manifest xmlns:android="http://android.com">
               <uses-permission android:name="android.permission.SEND_SMS" />
               <uses-permission android:name="android.permission.RECEIVE_SMS" />
               <uses-permission android:name="android.permission.READ_SMS" />
