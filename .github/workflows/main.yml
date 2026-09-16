@@ -15,82 +15,84 @@ jobs:
           
       - name: Initialize Complete Android Structure
         run: |
-          # Create fresh target folders
+          # Create fresh target folders safely
           mkdir -p app/src/main/res/values
           mkdir -p app/src/main/java/com/smsfix/app
           
-          # Move your Java files safely into the correct folders
+          # Move your Java files into the correct destination structures
           [ -f SMSInterceptor.java ] && mv SMSInterceptor.java app/src/main/java/com/smsfix/app/ || echo "Interceptor positioned"
           [ -f MainActivity.java ] && mv MainActivity.java app/src/main/java/com/smsfix/app/ || echo "MainActivity positioned"
           
-          # Remove the old duplicate manifest from the base folder to prevent conflicts
+          # Force clean all legacy root duplicates to prevent overlap crashes
           rm -f AndroidManifest.xml
+          rm -f SMSInterceptor.java
+          rm -f MainActivity.java
           
-          # Write a manifest using standard strict formatting strings
+          # Write pristine, left-aligned manifest file without layout spaces
           cat << 'EOF' > app/src/main/AndroidManifest.xml
-          <?xml version="1.0" encoding="utf-8"?>
-          <manifest xmlns:android="http://android.com">
-              <uses-permission android:name="android.permission.SEND_SMS"/>
-              <uses-permission android:name="android.permission.RECEIVE_SMS"/>
-              <uses-permission android:name="android.permission.READ_SMS"/>
-              <application android:allowBackup="true" android:label="SMSFix">
-                  <receiver android:name="com.smsfix.app.SMSInterceptor" android:exported="true" android:enabled="true">
-                      <intent-filter android:priority="2147483647">
-                          <action android:name="SMS_SENT" />
-                      </intent-filter>
-                  </receiver>
-                  <activity android:name="com.smsfix.app.MainActivity" android:exported="true">
-                      <intent-filter>
-                          <action android:name="android.intent.action.MAIN" />
-                          <category android:name="android.intent.category.LAUNCHER" />
-                      </intent-filter>
-                  </activity>
-              </application>
-          </manifest>
-          EOF
-          
-          # Generate top-level build.gradle
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://google.com">
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <application android:allowBackup="true" android:label="SMSFix">
+        <receiver android:name="com.smsfix.app.SMSInterceptor" android:exported="true" android:enabled="true">
+            <intent-filter android:priority="2147483647">
+                <action android:name="SMS_SENT" />
+            </intent-filter>
+        </receiver>
+        <activity android:name="com.smsfix.app.MainActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
+EOF
+
+          # Generate top-level configuration build file
           cat << 'EOF' > build.gradle
-          buildscript {
-              repositories {
-                  google()
-                  mavenCentral()
-              }
-              dependencies {
-                  classpath 'com.android.tools.build:gradle:8.2.0'
-              }
-          }
-          allprojects {
-              repositories {
-                  google()
-                  mavenCentral()
-              }
-          }
-          EOF
-          
-          # Generate settings.gradle
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.2.0'
+    }
+}
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+EOF
+
+          # Generate settings parameters
           echo "include ':app'" > settings.gradle
           
-          # Generate app-level build.gradle
+          # Generate localized application level rules
           cat << 'EOF' > app/build.gradle
-          apply plugin: 'com.android.application'
-          android {
-              compileSdk 34
-              namespace 'com.smsfix.app'
-              defaultConfig {
-                  applicationId "com.smsfix.app"
-                  minSdk 26
-                  targetSdk 34
-                  versionCode 1
-                  versionName "1.0"
-              }
-          }
-          EOF
-          
-          # Generate a tiny strings file
+apply plugin: 'com.android.application'
+android {
+    compileSdk 34
+    namespace 'com.smsfix.app'
+    defaultConfig {
+        applicationId "com.smsfix.app"
+        minSdk 26
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+}
+EOF
+
+          # Generate standard resources fallback values
           echo '<resources><string name="app_name">SMSFix</string></resources>' > app/src/main/res/values/strings.xml
           
-          # Force generate the wrapper execution tools
+          # Materialize required execution wrappers
           gradle wrapper
           
       - name: Setup Gradle
