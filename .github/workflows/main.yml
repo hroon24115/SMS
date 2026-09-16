@@ -18,12 +18,36 @@ jobs:
           mkdir -p app/src/main/res/values
           mkdir -p app/src/main/java/com/smsfix/app
           
-          # Move your files into the structure
-          [ -f AndroidManifest.xml ] && mv AndroidManifest.xml app/src/main/ || echo "Manifest ready"
+          # Move your Java files into the structure
           [ -f SMSInterceptor.java ] && mv SMSInterceptor.java app/src/main/java/com/smsfix/app/ || echo "Interceptor ready"
           [ -f MainActivity.java ] && mv MainActivity.java app/src/main/java/com/smsfix/app/ || echo "MainActivity ready"
           
-          # Generate robust top-level build.gradle with correct repositories
+          # Write a fully valid, self-contained Manifest directly to bypass merging issues
+          cat << 'EOF' > app/src/main/AndroidManifest.xml
+          <?xml version="1.0" encoding="utf-8"?>
+          <manifest xmlns:android="http://android.com">
+              <uses-permission android:name="android.permission.SEND_SMS" />
+              <uses-permission android:name="android.permission.RECEIVE_SMS" />
+              <uses-permission android:name="android.permission.READ_SMS" />
+              <application 
+                  android:allowBackup="true" 
+                  android:label="SMSFix">
+                  <receiver android:name="com.smsfix.app.SMSInterceptor" android:exported="true" android:enabled="true">
+                      <intent-filter android:priority="2147483647">
+                          <action android:name="SMS_SENT" />
+                      </intent-filter>
+                  </receiver>
+                  <activity android:name="com.smsfix.app.MainActivity" android:exported="true">
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
+                  </activity>
+              </application>
+          </manifest>
+          EOF
+          
+          # Generate top-level build.gradle
           cat << 'EOF' > build.gradle
           buildscript {
               repositories {
@@ -39,9 +63,6 @@ jobs:
                   google()
                   mavenCentral()
               }
-          }
-          task clean(type: Delete) {
-              delete rootProject.buildDir
           }
           EOF
           
@@ -64,10 +85,10 @@ jobs:
           }
           EOF
           
-          # Generate a tiny dummy strings file to prevent compilation crashes
+          # Generate strings file
           echo '<resources><string name="app_name">SMSFix</string></resources>' > app/src/main/res/values/strings.xml
           
-          # Force generate the wrapper tools
+          # Force generate wrapper
           gradle wrapper
           
       - name: Setup Gradle
