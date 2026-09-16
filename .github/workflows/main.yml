@@ -19,25 +19,21 @@ jobs:
           mkdir -p app/src/main/res/values
           mkdir -p app/src/main/java/com/smsfix/app
           
-          # Move your Java files safely into the correct folders if present
+          # Move your Java files safely into the correct folders
           [ -f SMSInterceptor.java ] && mv SMSInterceptor.java app/src/main/java/com/smsfix/app/ || echo "Interceptor positioned"
           [ -f MainActivity.java ] && mv MainActivity.java app/src/main/java/com/smsfix/app/ || echo "MainActivity positioned"
           
-          # CRUCIAL: Force delete old files from the root directory to stop merger crashes
+          # Remove the old duplicate manifest from the base folder to prevent conflicts
           rm -f AndroidManifest.xml
-          rm -f SMSInterceptor.java
-          rm -f MainActivity.java
           
-          # Write the perfect manifest directly to the correct app destination
+          # Write a manifest using standard strict formatting strings
           cat << 'EOF' > app/src/main/AndroidManifest.xml
           <?xml version="1.0" encoding="utf-8"?>
           <manifest xmlns:android="http://android.com">
-              <uses-permission android:name="android.permission.SEND_SMS" />
-              <uses-permission android:name="android.permission.RECEIVE_SMS" />
-              <uses-permission android:name="android.permission.READ_SMS" />
-              <application 
-                  android:allowBackup="true" 
-                  android:label="SMSFix">
+              <uses-permission android:name="android.permission.SEND_SMS"/>
+              <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+              <uses-permission android:name="android.permission.READ_SMS"/>
+              <application android:allowBackup="true" android:label="SMSFix">
                   <receiver android:name="com.smsfix.app.SMSInterceptor" android:exported="true" android:enabled="true">
                       <intent-filter android:priority="2147483647">
                           <action android:name="SMS_SENT" />
@@ -94,7 +90,7 @@ jobs:
           # Generate a tiny strings file
           echo '<resources><string name="app_name">SMSFix</string></resources>' > app/src/main/res/values/strings.xml
           
-          # Force generate the wrapper tools
+          # Force generate the wrapper execution tools
           gradle wrapper
           
       - name: Setup Gradle
