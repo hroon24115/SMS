@@ -13,19 +13,28 @@ jobs:
           distribution: 'temurin'
       - name: Auto Initialize Android Structure
         run: |
+          mkdir -p app/src/main/
           mkdir -p app/src/main/java/com/smsfix/app
-          mv AndroidManifest.xml app/src/main/
-          mv SMSInterceptor.java app/src/main/java/com/smsfix/app/
-          mv MainActivity.java app/src/main/java/com/smsfix/app/
+          
+          # Move user uploaded files safely if they exist
+          [ -f AndroidManifest.xml ] && mv AndroidManifest.xml app/src/main/ || echo "Using existing manifest"
+          [ -f SMSInterceptor.java ] && mv SMSInterceptor.java app/src/main/java/com/smsfix/app/ || echo "Using existing interceptor"
+          [ -f MainActivity.java ] && mv MainActivity.java app/src/main/java/com/smsfix/app/ || echo "Using existing mainactivity"
+          
+          # Force build file generation
           echo "plugins { id 'com.android.application' version '8.2.0' }" > settings.gradle
           echo "rootProject.name = 'SMSFix'" >> settings.gradle
           echo "include ':app'" >> settings.gradle
+          
           echo "plugins { id 'com.android.application' }" > app/build.gradle
-          echo "android { compileSdk 34; defaultConfig { applicationId 'com.smsfix.app'; minSdk 26; targetSdk 34; versionCode 1; versionName '1.0' } }" >> app/build.gradle
+          echo "android { compileSdk 34; namespace 'com.smsfix.app'; defaultConfig { applicationId 'com.smsfix.app'; minSdk 26; targetSdk 34; versionCode 1; versionName '1.0' }; buildFeatures { buildConfig true } }" >> app/build.gradle
+          
+          # Generate the missing wrapper execution tools
+          gradle wrapper
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
       - name: Compile and Build APK
-        run: ./gradlew assembleDebug
+        run: chmod +x gradlew && ./gradlew assembleDebug
       - name: Upload Finished APK
         uses: actions/upload-artifact@v4
         with:
