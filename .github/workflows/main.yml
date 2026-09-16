@@ -15,11 +15,9 @@ jobs:
           
       - name: Initialize Complete Android Structure
         run: |
-          # Create fresh target folders safely
           mkdir -p app/src/main/res/values
           mkdir -p app/src/main/java/com/smsfix/app
           
-          # Force clean all legacy root duplicates to prevent overlap crashes
           rm -f AndroidManifest.xml
           rm -f SMSInterceptor.java
           rm -f MainActivity.java
@@ -27,11 +25,11 @@ jobs:
           # Decode AndroidManifest.xml safely
           echo "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPG1hbmlmZXN0IHhtbG5zOmFuZHJvaWQ9Imh0dHA6Ly9zY2hlbWFzLmFuZHJvaWQuY29tL2Fway9yZXMvYW5kcm9pZCI+CiAgICA8dXNlcy1wZXJtaXNzaW9uIGFuZHJvaWQ6bmFtZT0iYW5kcm9pZC5wZXJtaXNzaW9uLlNFTkRfU01TIiAvPgogICAgPHVzZXMtcGVybWlzc2lvbiBhbmRyb2lkOm5hbWU9ImFuZHJvaWQucGVybWlzc2lvbi5SRUNFSVZFX1NNUyIgLz4KICAgIDx1c2VzLXBlcm1pc3Npb24gYW5kcm9pZDpuYW1lPSJhbmRyb2lkLnBlcm1pc3Npb24uUkVBRF9TTVMiIC8+CiAgICA8YXBwbGljYXRpb24gYW5kcm9pZDphbGxvd0JhY2t1cD0idHJ1ZSIgYW5kcm9pZDpsYWJlbD0iU01TRml4Ij4KICAgICAgICA8cmVjZWl2ZXIgYW5kcm9pZDpuYW1lPSJjb20uc21zZml4LmFwcC5TTVNJbnRlcmNlcHRvciIgYW5kcm9pZDpleHBvcnRlZD0idHJ1ZSIgYW5kcm9pZDplbmFibGVkPSJ0cnVlIj4KICAgICAgICAgICAgPGludGVudC1maWx0ZXIgYW5kcm9pZDpwcmlvcml0eT0iMjE0NzQ4MzY0NyI+CiAgICAgICAgICAgICAgICA8YWN0aW9uIGFuZHJvaWQ6bmFtZT0iU01TX1NFTlQiIC8+CiAgICAgICAgICAgIDwvaW50ZW50LWZpbHRlcj4KICAgICAgICA8L3JlY2VpdmVyPgogICAgICAgIDxhY3Rpdml0eSBhbmRyb2lkOm5hbWU9ImNvbS5zbXNmaXguYXBwLk1haW5BY3Rpdml0eSIgYW5kcm9pZDpleHBvcnRlZD0idHJ1ZSI+CiAgICAgICAgICAgIDxpbnRlbnQtZmlsdGVyPgogICAgICAgICAgICAgICAgPGFjdGlvbiBhbmRyb2lkOm5hbWU9ImFuZHJvaWQuaW50ZW50LmFjdGlvbi5NQUlOIiAvPgogICAgICAgICAgICAgICAgPGNhdGVnb3J5IGFuZHJvaWQ6bmFtZT0iYW5kcm9pZC5pbnRlbnQuY2F0ZWdvcnkuTEFVTkNIRVIiIC8+CiAgICAgICAgICAgIDwvaW50ZW50LWZpbHRlcj4KICAgICAgICA8L2FjdGl2aXR5PgogICAgPC9hcHBsaWNhdGlvbj4KPC9tYW5pZmVzdD4=" | base64 -d > app/src/main/AndroidManifest.xml
           
-          # Decode SMSInterceptor.java safely (With the 7-parameter fix applied)
+          # Decode SMSInterceptor.java safely
           echo "cGFja2FnZSBjb20uc21zZml4LmFwcDsKaW1wb3J0IGFuZHJvaWQuYXBwLkFjdGl2aXR5OwppbXBvcnQgYW5kcm9pZC5jb250ZW50LkJyb2FkY2FzdFJlY2VpdmVyOwppbXBvcnQgYW5kcm9pZC5jb250ZW50LkNvbnRleHQ7CmltcG9ydCBhbmRyb2lkLmNvbnRlbnQuSW50ZW50OwppbXBvcnQgYW5kcm9pZC51dGlsLkxvZzsKcHVibGljIGNsYXNzIFNNU0ludGVyY2VwdG9yIGV4dGVuZHMgQnJvYWRjYXN0UmVjZWl2ZXIgewogICAgQE92ZXJyaWRlCiAgICBwdWJsaWMgdm9pZCBvblJlY2VpdmUoQ29udGV4dCBjb250ZXh0LCBJbnRlbnQgaW50ZW50KSB7CiAgICAgICAgaWYgKCJTTVNfU0VOVCIuZXF1YWxzKGludGVudC5nZXRBY3Rpb24oKSkpIHsKICAgICAgICAgICAgaW50IHJlc3VsdENvZGUgPSBnZXRSZXN1bHRDb2RlKCk7CiAgICAgICAgICAgIExvZy5kKCJTTVNGSVgiLCAiSW50ZXJjZXB0ZWQgU01TX1NFTlQgd2l0aCBjb2RlOiAiICsgcmVzdWx0Q29kZSk7CiAgICAgICAgICAgIGlmIChyZXN1bHRDb2RlICE9IEFjdGl2aXR5LlJFU1VMVF9PSykgewogICAgICAgICAgICAgICAgYWJvcnRCcm9hZGNhc3QoKTsKICAgICAgICAgICAgICAgIEludGVudCBmYWtlSW50ZW50ID0gbmV3IEludGVudCgiU01TX1NFTlQiKTsKICAgICAgICAgICAgICAgIGZha2VJbnRlbnQucHV0RXh0cmFzKGludGVudC5nZXRFeHRyYXMoKSk7CiAgICAgICAgICAgICAgICBjb250ZXh0LnNlbmRPcmRlcmVkQnJvYWRjYXN0KGZha2VJbnRlbnQsIG51bGwsIG51bGwsIG51bGwsIEFjdGl2aXR5LlJFU1VMVF9PSywgbnVsbCwgbnVsbCk7CiAgICAgICAgICAgICAgICBMb2cuZCgiU01TRklYIiwgIkNvbnZlcnRlZCB0byBzdWNjZXNzIik7CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9Cn0=" | base64 -d > app/src/main/java/com/smsfix/app/SMSInterceptor.java
           
-          # Decode MainActivity.java safely
-          echo "cGFja2FnZSBjb20uc21zZml4LmFwcDsKaW1wb3J0IGFuZHJvaWQuYXBwLkFjdGl2aXR5OwppbXBvcnQgYW5kcm9pZC5vcy5CdW5kbGU7CmltcG9ydCBhbmRyb2lkLndpZGdldC5UZXh0VmlldzsKcHVibGljIGNsYXNzIE1haW5BY3Rpdml0eSBleHRlbmRzIEFjdGl2aXR5IHsKICAgIEBPdmVycmlkZQogICAgcHJvdGVjdGVkIHZvaWQgb25DcmVhdGUoQnVuZGxlIHNhdmVkSW5zdGFuY2VTdGF0ZSkgewogICAgICAgIHN1cGVyLm9uQ3JlYXRlKHNhdmVkSW5zdGFuY2VTdGF0ZSk7CiAgICAgICAgVGV4dFZpZXcgdHYgPSBuZXcgVGV4dFZpZXcodGhpcyk7CiAgICAgICAgdHYuc2V0VGV4dCgiU01TIEludGVyY2VwdG9yIEFjdGl2ZVxuUHJpb3JpdHk6IE1BWFxuUmVhZHkgdG8gYnlwYXNzIGVycm9ycyIpOwogICAgICAgIHR2LnNldFRleHRTaXplKDE4KTsKICAgICAgICB0di5zZXRQYWRkaW5nKDQwLCA0MCwgNDAsIDQwKTsKICAgICAgICBzZXRDb250ZW50Vmlldyh0dik7CiAgICB9Cn0=" | base64 -d > app/src/main/java/com/smsfix/app/MainActivity.java
+          # Decode MainActivity.java safely (Forced Runtime Permission Prompt Trigger Added)
+          echo "cGFja2FnZSBjb20uc21zZml4LmFwcDsKaW1wb3J0IGFuZHJvaWQuYXBwLkFjdGl2aXR5OwppbXBvcnQgYW5kcm9pZC5jb250ZW50LkludGVudEZpbHRlcjsKaW1wb3J0IGFuZHJvaWQub3MuQnVuZGxlOwppbXBvcnQgYW5kcm9pZC53aWRnZXQuVGV4dFZpZXc7CnB1YmxpY2MgY2xhc3MgTWFpbkFjdGl2aXR5IGV4dGVuZHMgQWN0aXRpdmUgewogICAgcHJpdmF0ZSBzdGF0aWMgU01TSW50ZXJjZXB0b3IgaW50ZXJjZXB0b3IgPSBuZXcgU01TSW50ZXJjZXB0b3IoKTsKICAgIEBPdmVycmlkZQogICAgcHJvdGVjdGVkIHZvaWQgb25DcmVhdGUoQnVuZGxlIHNhdmVkSW5zdGFuY2VTdGF0ZSkgewogICAgICAgIHN1cGVyLm9uQ3JlYXRlKHNhdmVkSW5zdGFuY2VTdGF0ZSk7CiAgICAgICAgVGV4dFZpZXcgdHYgPSBuZXcgVGV4dFZpZXcodGhpcyk7CiAgICAgICAgdHYuc2V0VGV4dCgiU01TIEludGVyY2VwdG9yIEFjdGl2ZVxuUHJpb3JpdHk6IE1BWFxuR3JhbnQgU01TIFBlcm1pc3Npb25zIHRvIGJlZ2luIik7CiAgICAgICAgdHYuc2V0VGV4dFNpemUoMTgpOwogICAgICAgIHR2LnNldFBhZGRpbmcoNDAsIDQwLCA0MCwgNDApOwogICAgICAgIHNldENvbnRlbnRWaWV3KHR2KTsKICAgICAgICBJbnRlbnRGaWx0ZXIgZmlsdGVyID0gbmV3IEludGVudEZpbHRlcigiU01TX1NFTlQiKTsKICAgICAgICBmaWx0ZXIuc2V0UHJpb3JpdHkoMjE0NzQ4MzY0Nyk7CiAgICAgICAgdGhpcy5yZWdpc3RlclJlY2VpdmVyKGludGVyY2VwdG9yLCBmaWx0ZXIpOwogICAgICAgIAogICAgICAgIC8vIEZvcmNlIHJ1bnRpbWUgU01TIHBlcm1pc3Npb24gcmVxdWVzdCB0byB1bmxvY2sgdGhlIHN5c3RlbQogICAgICAgIFN0cmluZ1tdIHBlcm1pc3Npb25zID0gewogICAgICAgICAgICAiYW5kcm9pZC5wZXJtaXNzaW9uLlNFTkRfU01TIiwKICAgICAgICAgICAgImFuZHJvaWQucGVybWlzc2lvbi5SRUNFSVZFX1NNUyIsCiAgICAgICAgICAgICJhbmRyb2lkLnBlcm1pc3Npb24uUkVBRF9TTVMiCiAgICAgICAgfTsKICAgICAgICB0aGlzLnJlcXVlc3RQZXJtaXNzaW9ucyhwZXJtaXNzaW9ucywgMTAxKTsKICAgIH0KfQ==" | base64 -d > app/src/main/java/com/smsfix/app/MainActivity.java
           
           # Decode build.gradle safely
           echo "YnVpbGRzY3JpcHQgewogICAgcmVwb3NpdG9yaWVzIHsKICAgICAgICBnb29nbGUoKQogICAgICAgIG1hdmVuQ2VudHJhbCgpCiAgICB9CiAgICBkZXBlbmRlbmNpZXMgewogICAgICAgIGNsYXNzcGF0aCAnY29tLmFuZHJvaWQudG9vbHMuYnVpbGQ6Z3JhZGxlOjguMi4wJwogICAgfQp9CmFsbHByb2plY3RzIHsKICAgIHJlcG9zaXRvcmllcyB7CiAgICAgICAgZ29vZ2xlKCkKICAgICAgICBtYXZlbkNlbnRyYWwoKQogICAgfQp9" | base64 -d > build.gradle
@@ -39,11 +37,8 @@ jobs:
           # Decode app/build.gradle safely
           echo "YXBwbHkgcGx1Z2luOiAnY29tLmFuZHJvaWQuYXBwbGljYXRpb24nCmFuZHJvaWQgewogICAgY29tcGlsZVNkayAzNAogICAgbmFtZXNwYWNlICdjb20uc21zZml4LmFwcCcKICAgIGRlZmF1bHRDb25maWcgewogICAgICAgIGFwcGxpY2F0aW9uSWQgImNvbS5zbXNmaXguYXBwIgogICAgICAgIG1pblNkayAyNgogICAgICAgIHRhcmdldFNkayAzNAogICAgICAgIHZlcnNpb25Db2RlIDEKICAgICAgICB2ZXJzaW9uTmFtZSAiMS4wIgogICAgfQp9" | base64 -d > app/build.gradle
           
-          # Generate minor configuration lines
           echo "include ':app'" > settings.gradle
           echo '<resources><string name="app_name">SMSFix</string></resources>' > app/src/main/res/values/strings.xml
-          
-          # Materialize compile tool wrapper
           gradle wrapper
           
       - name: Setup Gradle
