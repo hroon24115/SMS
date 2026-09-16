@@ -19,14 +19,16 @@ jobs:
           mkdir -p app/src/main/res/values
           mkdir -p app/src/main/java/com/smsfix/app
           
-          # Move your Java files safely into the correct folders
+          # Move your Java files safely into the correct folders if present
           [ -f SMSInterceptor.java ] && mv SMSInterceptor.java app/src/main/java/com/smsfix/app/ || echo "Interceptor positioned"
           [ -f MainActivity.java ] && mv MainActivity.java app/src/main/java/com/smsfix/app/ || echo "MainActivity positioned"
           
-          # Remove the old duplicate manifest from the base folder to prevent conflicts
+          # CRUCIAL: Force delete old files from the root directory to stop merger crashes
           rm -f AndroidManifest.xml
+          rm -f SMSInterceptor.java
+          rm -f MainActivity.java
           
-          # Write a clean manifest WITHOUT the deprecated package attribute
+          # Write the perfect manifest directly to the correct app destination
           cat << 'EOF' > app/src/main/AndroidManifest.xml
           <?xml version="1.0" encoding="utf-8"?>
           <manifest xmlns:android="http://android.com">
@@ -92,7 +94,7 @@ jobs:
           # Generate a tiny strings file
           echo '<resources><string name="app_name">SMSFix</string></resources>' > app/src/main/res/values/strings.xml
           
-          # Force generate the wrapper execution tools
+          # Force generate the wrapper tools
           gradle wrapper
           
       - name: Setup Gradle
